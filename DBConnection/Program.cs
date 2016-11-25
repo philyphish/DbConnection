@@ -6,40 +6,28 @@ using System.Threading.Tasks;
 
 namespace DBConnection
 {
-    //    They have a connection string
-    //• They can be opened
-    //• They can be closed
-    //• They may have a timeout attribute(so if the connection could not be opened within the
-    //timeout, an exception will be thrown).
-    //Your job is to represent these commonalities in a base class called DbConnection.This class
-    //should have two properties:
-    //ConnectionString : string
-    //Timeout : TimeSpan
-
+  
     public class DBConnect
     {
-        //private static string _dbString;
 
         public string ConnectionString {get; set;}
-
+        public bool Status { get; set; }
         public TimeSpan Timeout { get; set; }
-
-
-        
 
         public DBConnect()
         {
             Console.WriteLine("Enter your connection string: ");
             ConnectionString = Console.ReadLine();
 
-            if (String.IsNullOrWhiteSpace(ConnectionString))
+            if (string.IsNullOrWhiteSpace(ConnectionString))
             {
                 Console.WriteLine("Error");
+                Status = false;
             }
             else
             {   
-                Console.WriteLine("DBConnect has been initialized:");
-               
+                Console.WriteLine("Connected to the Database");
+                Status = true;
             }
             
         }
@@ -60,7 +48,7 @@ namespace DBConnection
     {
         public override void Open()
         {
-            Console.WriteLine("SQL Connection Opened: ");
+            Console.WriteLine("SQL connection opened");
         }
 
         public override void Closed()
@@ -86,10 +74,39 @@ namespace DBConnection
     {
         public DbCommand()
         {
-            var dbConnection = new DBConnect();
-           
+            
+        }
 
-            dbConnection.ConnectionString = Console.ReadLine();
+        public DbCommand(string Tsql)
+        {
+            
+            
+            if (string.IsNullOrWhiteSpace(Tsql))
+                Console.WriteLine("Failed to initialize DbCommand. T-SQL not sent.");
+            else
+                Console.WriteLine("Sending T-SQL comand");
+        }
+
+        public void Execute()
+        {
+            //varnection = new DBConnect();
+            var sqlConnection = new SQLConnection();
+
+            if (sqlConnection.Status)
+            {
+                sqlConnection.Open();
+                //run the comand
+                Console.WriteLine("Enter your comand.");
+                var cmd = Console.ReadLine();
+                //this is causing the enter your string to execute twice.
+                var dbComand = new DbCommand(cmd);
+                //close the connection
+                sqlConnection.Closed();
+            }
+            else
+            {
+                Console.WriteLine("An error occured. ");
+            }
         }
     }
 
@@ -97,9 +114,9 @@ namespace DBConnection
     {
         static void Main(string[] args)
         {
-            var dbComand = new DbCommand();
-
-           
+            var cmd = new DbCommand();
+            cmd.Execute();
+            
         }
     }
 }
