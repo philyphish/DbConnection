@@ -16,33 +16,42 @@ namespace DBConnection
     //ConnectionString : string
     //Timeout : TimeSpan
 
-    public abstract class DBConnect
+    public class DBConnect
     {
-        public string ConnectionString { get; set; }
+        //private static string _dbString;
+
+        public string ConnectionString {get; set;}
+
         public TimeSpan Timeout { get; set; }
+
+
+        
 
         public DBConnect()
         {
+            Console.WriteLine("Enter your connection string: ");
+            ConnectionString = Console.ReadLine();
 
-        }
-
-        public DBConnect(string connectionString)
-        {
-            if (String.IsNullOrWhiteSpace(connectionString))
+            if (String.IsNullOrWhiteSpace(ConnectionString))
             {
                 Console.WriteLine("Error");
             }
             else
-            {
-                connectionString = ConnectionString;
-                var comand = new DbCommand(connectionString);
+            {   
+                Console.WriteLine("DBConnect has been initialized:");
                
             }
             
         }
 
-        public abstract void Open();
-        public abstract void Closed();
+        public virtual void Open()
+        {
+
+        }
+        public virtual void Closed()
+        {
+
+        }
         
 
     }
@@ -75,9 +84,12 @@ namespace DBConnection
 
     public class DbCommand
     {
-        public DbCommand(string connection)
+        public DbCommand()
         {
-            Console.WriteLine("DbCommand initialized: ");
+            var dbConnection = new DBConnect();
+           
+
+            dbConnection.ConnectionString = Console.ReadLine();
         }
     }
 
@@ -85,6 +97,9 @@ namespace DBConnection
     {
         static void Main(string[] args)
         {
+            var dbComand = new DbCommand();
+
+           
         }
     }
 }
